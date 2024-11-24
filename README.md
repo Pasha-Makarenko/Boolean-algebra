@@ -26,7 +26,7 @@ npm run start
 \usepackage[utf8]{inputenc}
 \usepackage[english,ukrainian]{babel} 
 \usepackage{colortbl} % фарбування рядків таблиці
-\pagestyle{empty} % скасування нумерацыъ сторынок
+\pagestyle{empty} % скасування нумерації сторінок
 
 \begin{document}
 % контент документу
