@@ -26,8 +26,8 @@ export class LatexNormalForm {
     showUsedImplicants: false,
     core: {
       color: "gray",
-      opacity: 0.8,
-    },
+      opacity: 0.8
+    }
   }
 
   static math = (str: string) => `\\begin{math}\n${str}\n\\end{math}`
@@ -118,21 +118,25 @@ export class LatexNormalForm {
     \\hline
     ${mnf.selections
       .map((selection, i) =>
-        options?.hasOwnProperty("showZeroSelection")
-          ? options.showZeroSelection
-          : LatexNormalForm.defaultTableNfOptions.showZeroSelection
-            ? selection
-            : i === 0
-              ? selection.filter(imp => !imp.used)
-              : selection
+        (
+          options?.hasOwnProperty("showZeroSelection")
+            ? options.showZeroSelection
+            : LatexNormalForm.defaultTableNfOptions.showZeroSelection
+        )
+          ? selection
+          : i === 0
+            ? selection.filter(imp => !imp.used)
+            : selection
       )
       .flat()
       .filter(imp =>
-        options?.hasOwnProperty("showUsedImplicants")
-          ? options?.showUsedImplicants
-          : LatexNormalForm.defaultTableNfOptions.showUsedImplicants
-            ? true
-            : !imp.used
+        (
+          options?.hasOwnProperty("showUsedImplicants")
+            ? options?.showUsedImplicants
+            : LatexNormalForm.defaultTableNfOptions.showUsedImplicants
+        )
+          ? true
+          : !imp.used
       )
       .map(
         imp => `
@@ -162,7 +166,7 @@ export class NormalForm {
       .concat(dec.toString(2).split("").map(Number)) as Array<0 | 1>
 
   static exclude = (count: number, sets: Array<number>) =>
-    new Array(16)
+    new Array(2 ** count)
       .fill(null)
       .map((_, i) => i)
       .filter(set => !sets.includes(set))
@@ -209,7 +213,7 @@ export class NormalForm {
     sets.map(set =>
       NormalForm.decToBin(set, count).map((digit, index) => ({
         value: digit,
-        index: index + 1,
+        index: index + 1
       }))
     )
 
@@ -220,8 +224,8 @@ export class NormalForm {
         set,
         indexes: [i],
         used: false,
-        isCore: false,
-      })),
+        isCore: false
+      }))
     ]
 
     for (let selection = 1; selection < count; selection++) {
@@ -248,7 +252,7 @@ export class NormalForm {
               set: merge,
               indexes,
               used: false,
-              isCore: false,
+              isCore: false
             })
 
             selections[selection - 1].forEach(imp => {
@@ -300,7 +304,7 @@ export class NormalForm {
       result: flatSelections.filter(imp => imp.isCore).map(imp => imp.set),
       selections,
       pnf,
-      sets,
+      sets
     }
   }
 }
