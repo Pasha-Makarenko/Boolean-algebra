@@ -146,7 +146,7 @@ export class LatexNormalForm {
         .fill("")
         .map((_, i) =>
           imp.indexes.includes(i)
-            ? ` ${options?.char || LatexNormalForm.times} `
+            ? ` $${options?.char || LatexNormalForm.times}$ `
             : " "
         )
         .join("&")}\\\\
