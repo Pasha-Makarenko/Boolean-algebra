@@ -1,25 +1,28 @@
-import { LatexNormalForm, NormalForm } from "./normalForm"
+import NormalFormService from "./normalForm/normalForm.service"
+import NormalFormFormater from "./normalForm/normalForm.formater"
+import LatexFormater from "./latex/latex.formater"
 
 const array = [1, 3, 5, 7, 8, 9, 10, 12, 13, 15]
-const cnf = NormalForm.mnf(4, array)
-const dnf = NormalForm.mnf(4, NormalForm.exclude(4, array))
+const map = NormalFormService.karnaughMap(
+  4,
+  NormalFormService.exclude(4, array),
+  NormalFormService.defaultHeadersKarnaughMap
+)
+const cnf = NormalFormService.mnf(4, array)
+const dnf = NormalFormService.mnf(4, NormalFormService.exclude(4, array))
 
-// ДДНФ і ДКНФ
-console.log(LatexNormalForm.math(LatexNormalForm.nf("dis", 4, dnf.pnf)))
-console.log(LatexNormalForm.math(LatexNormalForm.nf("con", 4, cnf.pnf)))
+console.log(LatexFormater.math.area(NormalFormFormater.nf("dis", 4, dnf.pnf)))
+console.log(LatexFormater.math.area(NormalFormFormater.nf("con", 4, cnf.pnf)))
 
-// МДНФ і МКНФ
-console.log(LatexNormalForm.math(LatexNormalForm.nf("dis", 4, dnf.result)))
-console.log(LatexNormalForm.math(LatexNormalForm.nf("con", 4, cnf.result)))
-
-// Етапи склнювання
 console.log(
-  LatexNormalForm.math(LatexNormalForm.selections("dis", dnf.selections))
+  LatexFormater.math.area(NormalFormFormater.selections("dis", dnf.selections))
 )
 console.log(
-  LatexNormalForm.math(LatexNormalForm.selections("con", cnf.selections))
+  LatexFormater.math.area(NormalFormFormater.selections("con", cnf.selections))
 )
 
-// Таблиці методом Квайна
-console.log(LatexNormalForm.math(LatexNormalForm.tableNf("dis", dnf)))
-console.log(LatexNormalForm.math(LatexNormalForm.tableNf("con", cnf)))
+console.log(NormalFormFormater.quineTable("dis", dnf))
+console.log(NormalFormFormater.quineTable("con", cnf))
+
+console.log(NormalFormFormater.karnaughMap(map, dnf))
+console.log(NormalFormFormater.karnaughMap(map, cnf))
