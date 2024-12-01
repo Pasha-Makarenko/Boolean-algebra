@@ -133,7 +133,7 @@ export default class NormalFormFormater {
         result += `(${imp.indexes.map(i => i + 1).join(", ")}): ${NormalFormFormater.implicant(type, imp.set, arg)} ${LatexFormater.basic.braakLine}`
 
         if (
-          implicant !== selections[selection].length - 1 ||
+          implicant !== selections[selection].length - 1 &&
           selection !== selections.length - 1
         ) {
           result += "\n"
@@ -585,7 +585,11 @@ export default class NormalFormFormater {
             let diraction: CornerDirection = "topLeft"
 
             if (vert === 0) {
-              areaCoords.y1 = 0
+              areaCoords.y2 = map.result.length
+              areaCoords.y1 = map.result.length -
+                (areaRows[vert][0] + 1 -
+                  (options?.area?.padding ||
+                    NormalFormFormater.defaultKarnaughMapOptions.area.padding))
 
               if (hor === 0) {
                 areaCoords.x1 = 0
@@ -594,7 +598,11 @@ export default class NormalFormFormater {
                 diraction = "topRight"
               }
             } else if (vert === areaRows.length - 1) {
-              areaCoords.y2 = map.result.length
+              areaCoords.y1 = 0
+              areaCoords.y2 = map.result.length -
+                (areaRows[vert][areaRows[vert].length - 1] +
+                  (options?.area?.padding ||
+                    NormalFormFormater.defaultKarnaughMapOptions.area.padding))
 
               if (hor === 0) {
                 diraction = "bottomLeft"

@@ -150,38 +150,38 @@ export default class NormalFormService {
       }
     }
 
-    let usedIndexes: Array<number> = new Array(sets.length).fill(0)
+    const usedIndexes: Array<number> = new Array(sets.length).fill(0)
     const flatSelections = selections.flat()
 
-    flatSelections
-      .filter(imp => !imp.used)
-      .forEach(imp => imp.indexes.forEach(i => usedIndexes[i]++))
+    for (let i = flatSelections.length - 1; i >= 0; i--) {
+      const imp = flatSelections[i]
 
-    const sortedUsedIndexes: Array<[number, number]> = usedIndexes
-      .map((count, i) => [i, count] as [number, number])
-      .sort((a, b) => (b[1] !== a[1] ? b[1] - a[1] : b[0] - a[0]))
+      if (imp.used) {
+        continue
+      }
 
-    usedIndexes = []
+      if (imp.indexes.find(index => usedIndexes[index] === 0) !== undefined) {
+        imp.isCore = true
 
-    for (let used = sortedUsedIndexes.length - 1; used >= 0; used--) {
-      for (let index = flatSelections.length - 1; index >= 0; index--) {
-        if (usedIndexes.length >= sets.length) {
+        imp.indexes.forEach(index => usedIndexes[index]++)
+
+        if (!usedIndexes.includes(0)) {
           break
         }
+      }
+    }
 
-        const imp = flatSelections[index]
+    for (let i = 0; i < flatSelections.length; i++) {
+      const imp = flatSelections[i]
 
-        if (
-          !imp.used &&
-          !imp.isCore &&
-          !usedIndexes.includes(sortedUsedIndexes[used][0]) &&
-          imp.indexes.includes(sortedUsedIndexes[used][0])
-        ) {
-          imp.indexes.forEach(i =>
-            !usedIndexes.includes(i) ? usedIndexes.push(i) : null
-          )
-          imp.isCore = true
-        }
+      if (imp.used) {
+        continue
+      }
+
+      if (imp.indexes.find(index => usedIndexes[index] === 1) === undefined) {
+        imp.isCore = false
+
+        imp.indexes.forEach(index => usedIndexes[index]--)
       }
     }
 
