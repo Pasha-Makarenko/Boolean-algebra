@@ -1,15 +1,28 @@
-import LatexFormater, {
-  CornerDirection,
-  SemiRectDirection
-} from "../latex/latex.formater"
-import NormalFormService, { ISelection, ISet } from "./normalForm.service"
-
-export type TypeNF = "dis" | "con"
+import LatexFormater from "../latex/latex.formater"
+import {
+  DefaultArg,
+  DefaultKarnaughMapOptions,
+  DefaultNormalFormOptions,
+  DefaultQuineTableOptions,
+  DefaultSelectionsOptions,
+  ISelection,
+  ISet,
+  TypeNF
+} from "./normalForm.interfaces"
+import NormalFormService from "./normalForm.service"
+import { CornerDirection, SemiRectDirection } from "../latex/latex.interfaces"
 
 export default class NormalFormFormater {
   static defaultFunc = "f"
-  static defaultArg = "x"
-  static defaultQuineTableOptions = {
+  static defaultArg: DefaultArg = index => LatexFormater.math.index("x", index)
+  static defaultNormalFormOptions: DefaultNormalFormOptions = {
+    arg: NormalFormFormater.defaultArg,
+    fn: NormalFormFormater.defaultFunc
+  }
+  static defaultSelectionsOptions: DefaultSelectionsOptions = {
+    arg: NormalFormFormater.defaultArg
+  }
+  static defaultQuineTableOptions: DefaultQuineTableOptions = {
     isSets: true,
     arg: NormalFormFormater.defaultArg,
     char: LatexFormater.math.times,
@@ -20,7 +33,7 @@ export default class NormalFormFormater {
       opacity: 0.8
     }
   }
-  static defaultKarnaughMapOptions = {
+  static defaultKarnaughMapOptions: DefaultKarnaughMapOptions = {
     arg: NormalFormFormater.defaultArg,
     line: {
       offset: 0.2,
@@ -42,6 +55,13 @@ export default class NormalFormFormater {
     }
   }
 
+  /*
+  * Format the signature of a normal form function
+  * @param {number} count - Count of arguments
+  * @param {string} fn - Function name
+  * @param {DefaultArg} arg - Argument formatter
+  * @returns {string} - Signature of a normal form function
+  * */
   static signature = (
     count: number,
     fn = NormalFormFormater.defaultFunc,
@@ -50,7 +70,7 @@ export default class NormalFormFormater {
     let result = fn + "("
 
     for (let i = 0; i < count; i++) {
-      result += LatexFormater.math.index(arg, i + 1)
+      result += arg(i + 1)
 
       if (i !== count - 1) {
         result += ", "
@@ -62,6 +82,13 @@ export default class NormalFormFormater {
     return result
   }
 
+  /*
+  * Format an implicant
+  * @param {TypeNF} type - Type of normal form
+  * @param {ISet} set - Implicant
+  * @param {DefaultArg} arg - Argument formatter
+  * @returns {string} - Formatted implicant
+  * */
   static implicant = (
     type: TypeNF,
     set: ISet,
@@ -72,15 +99,15 @@ export default class NormalFormFormater {
     for (let i = 0; i < set.length; i++) {
       result += set[i].value
         ? type === "dis"
-          ? LatexFormater.math.index(arg, set[i].index)
+          ? arg(set[i].index)
           : LatexFormater.math.overline(
-              LatexFormater.math.index(arg, set[i].index)
+              arg(set[i].index)
             )
         : type === "dis"
           ? LatexFormater.math.overline(
-              LatexFormater.math.index(arg, set[i].index)
+              arg(set[i].index)
             )
-          : LatexFormater.math.index(arg, set[i].index)
+          : arg(set[i].index)
 
       if (i !== set.length - 1) {
         result +=
@@ -93,20 +120,31 @@ export default class NormalFormFormater {
     return result
   }
 
+  /*
+  * Format a normal form
+  * @param {TypeNF} type - Type of normal form
+  * @param {number} count - Count of arguments
+  * @param {Array<ISet>} sets - List of implicants
+  * @param {Partial<DefaultNormalFormOptions>} options - Options
+  * @returns {string} - Formatted normal form
+  * */
   static nf = (
     type: TypeNF,
     count: number,
     sets: Array<ISet>,
-    fn = NormalFormFormater.defaultFunc,
-    arg = NormalFormFormater.defaultArg
+    options = NormalFormFormater.defaultNormalFormOptions
   ) => {
-    let result = NormalFormFormater.signature(count, fn, arg)
+    let result = NormalFormFormater.signature(
+      count,
+      options?.fn || NormalFormFormater.defaultNormalFormOptions.fn,
+      options?.arg || NormalFormFormater.defaultNormalFormOptions.arg
+    )
 
     for (let i = 0; i < sets.length; i++) {
       result +=
         type === "dis" || sets[i].length === 1
-          ? NormalFormFormater.implicant(type, sets[i], arg)
-          : `(${NormalFormFormater.implicant(type, sets[i], arg)})`
+          ? NormalFormFormater.implicant(type, sets[i], options?.arg || NormalFormFormater.defaultNormalFormOptions.arg)
+          : `(${NormalFormFormater.implicant(type, sets[i], options?.arg || NormalFormFormater.defaultNormalFormOptions.arg)})`
 
       if (i !== sets.length - 1) {
         result += type === "dis" ? LatexFormater.math.or + "\n" : "\n"
@@ -116,10 +154,17 @@ export default class NormalFormFormater {
     return result
   }
 
+  /*
+  * Fprmat a list of selections
+  * @param {TypeNF} type - Type of normal form
+  * @param {Array<ISelection>} selections - List of selections
+  * @param {Partial<DefaultSelectionsOptions>} options - Options
+  * @returns {string} - Formatted selections
+  * */
   static selections = (
     type: TypeNF,
     selections: Array<ISelection>,
-    arg = NormalFormFormater.defaultArg
+    options: Partial<DefaultSelectionsOptions> = NormalFormFormater.defaultSelectionsOptions
   ) => {
     let result = ""
 
@@ -130,7 +175,7 @@ export default class NormalFormFormater {
         implicant++
       ) {
         const imp = selections[selection][implicant]
-        result += `(${imp.indexes.map(i => i + 1).join(", ")}): ${NormalFormFormater.implicant(type, imp.set, arg)} ${LatexFormater.basic.braakLine}`
+        result += `(${imp.indexes.map(i => i + 1).join(", ")}): ${NormalFormFormater.implicant(type, imp.set, options?.arg || NormalFormFormater.defaultSelectionsOptions.arg)} ${LatexFormater.basic.braakLine}`
 
         if (
           implicant !== selections[selection].length - 1 &&
@@ -144,10 +189,17 @@ export default class NormalFormFormater {
     return result
   }
 
+  /*
+  * Format a Quine table
+  * @param {TypeNF} type - Type of normal form
+  * @param {{ result: INormalForm, pnf: INormalForm, selection: Array<Iselection>, sets: Array<number> }} mnf - Minimal normal form
+  * @param {Partial<DefaultQuineTableOptions>} options - Options
+  * @returns {string} - Formatted Quine table
+  * */
   static quineTable = (
     type: TypeNF,
     mnf: ReturnType<typeof NormalFormService.mnf>,
-    options?: Partial<typeof NormalFormFormater.defaultQuineTableOptions>
+    options: Partial<DefaultQuineTableOptions> = NormalFormFormater.defaultQuineTableOptions
   ) => {
     let sets = LatexFormater.tabular.separator + " "
 
@@ -261,10 +313,17 @@ export default class NormalFormFormater {
     )
   }
 
+  /*
+  * Format a Karnaugh map
+  * @param {{ result: Array<Array<Digits>>, headers: IHeaders }} map - Karnaugh map
+  * @param {{ result: INormalForm, pnf: INormalForm, selection: Array<Iselection>, sets: Array<number> }} mnf - Minimal normal form
+  * @param {Partial<DefaultKarnaughMapOptions>} options - Options
+  * @returns {string} - Formatted Karnaugh map
+  * */
   static karnaughMap = (
     map: ReturnType<typeof NormalFormService.karnaughMap>,
     mnf: ReturnType<typeof NormalFormService.mnf>,
-    options?: Partial<typeof NormalFormFormater.defaultKarnaughMapOptions>
+    options: Partial<DefaultKarnaughMapOptions> = NormalFormFormater.defaultKarnaughMapOptions
   ) => {
     let digits = ""
 
@@ -315,10 +374,9 @@ export default class NormalFormFormater {
           argCoords.x,
           argCoords.y,
           LatexFormater.math.brackets(
-            LatexFormater.math.index(
-              options?.arg || NormalFormFormater.defaultKarnaughMapOptions.arg,
-              rowIndexes[i].index
-            )
+            options?.arg
+              ? options.arg(rowIndexes[i].index)
+              : NormalFormFormater.defaultKarnaughMapOptions.arg(rowIndexes[i].index)
           )
         ) + "\n"
 
@@ -389,10 +447,9 @@ export default class NormalFormFormater {
           argCoords.x,
           argCoords.y,
           LatexFormater.math.brackets(
-            LatexFormater.math.index(
-              NormalFormFormater.defaultArg,
-              columnIndexes[i].index
-            )
+            options?.arg
+              ? options.arg(columnIndexes[i].index)
+              : NormalFormFormater.defaultKarnaughMapOptions.arg(columnIndexes[i].index)
           )
         ) + "\n"
 

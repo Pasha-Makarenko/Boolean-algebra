@@ -1,23 +1,17 @@
-export type Digits = 0 | 1
-
-export type ISet = Array<{
-  value: Digits
-  index: number
-}>
-
-export type ISelection = Array<{
-  set: ISet
-  indexes: Array<number>
-  used: boolean
-  isCore: boolean
-}>
+import { Digits, IHeaders, INormalForm, ISelection, ISet } from "./normalForm.interfaces"
 
 export default class NormalFormService {
-  static defaultHeadersKarnaughMap = {
+  static defaultHeadersKarnaughMap: IHeaders = {
     rows: [[1], [1, 3], [3], []],
     columns: [[2], [2, 4], [4], []]
   }
 
+  /*
+  * Convert decimal to binary
+  * @param {number} dec - Decimal number
+  * @param {number} minLength - Minimum length of binary number
+  * @returns {Array<Digits>} - Binary number
+  * */
   static decToBin = (dec: number, minLength: number) => {
     const bin = dec.toString(2).split("").map(Number)
     return new Array(minLength - bin.length)
@@ -25,6 +19,12 @@ export default class NormalFormService {
       .concat(bin) as Array<Digits>
   }
 
+  /*
+  * Exclude sets from the list
+  * @param {number} count - Count of digits in binary number
+  * @param {Array<number>} sets - List of sets
+  * @returns {Array<number>} - List of sets without excluded
+   */
   static exclude = (count: number, sets: Array<number>) => {
     const result = []
 
@@ -37,6 +37,12 @@ export default class NormalFormService {
     return result
   }
 
+  /*
+  * Compare two implicants
+  * @param {ISet} imp1 - First implicant
+  * @param {ISet} imp2 - Second implicant
+  * @returns {boolean} - Result of comparison
+   */
   static compareImplicants = (imp1: ISet, imp2: ISet) => {
     if (imp1.length !== imp2.length) {
       return false
@@ -51,6 +57,12 @@ export default class NormalFormService {
     return true
   }
 
+  /*
+  * Combine two implicants
+  * @param {ISet} imp1 - First implicant
+  * @param {ISet} imp2 - Second implicant
+  * @returns {ISet | undefined} - Combined implicant
+   */
   static combineImplicants = (imp1: ISet, imp2: ISet) => {
     if (imp1.length !== imp2.length) {
       return
@@ -80,8 +92,14 @@ export default class NormalFormService {
     return result
   }
 
+  /*
+  * Get perfect normal form
+  * @param {number} count - Count of arguments
+  * @param {Array<number>} sets - List of sets
+  * @returns {Array<ISet>} - Perfect normal form
+   */
   static pnf = (count: number, sets: Array<number>) => {
-    const result: Array<ISet> = []
+    const result: INormalForm = []
 
     for (let i = 0; i < sets.length; i++) {
       const set = NormalFormService.decToBin(sets[i], count).map(
@@ -99,6 +117,12 @@ export default class NormalFormService {
     }
   }
 
+  /*
+  * Get minimal normal form
+  * @param {number} count - Count of arguments
+  * @param {Array<number>} sets - List of sets
+  * @returns {{ result: INormalForm, pnf: INormalForm, selection: Array<Iselection>, sets: Array<number> }} - Minimal normal form
+   */
   static mnf = (count: number, sets: Array<number>) => {
     const pnf = NormalFormService.pnf(count, sets)
     const selections: Array<ISelection> = [
@@ -186,17 +210,24 @@ export default class NormalFormService {
     }
 
     return {
-      result: flatSelections.filter(imp => imp.isCore).map(imp => imp.set),
+      result: flatSelections.filter(imp => imp.isCore).map(imp => imp.set) as INormalForm,
       selections,
       pnf: pnf.result,
       sets
     }
   }
 
+  /*
+  * Get Karnaugh map
+  * @param {number} count - Count of arguments
+  * @param {Array<number>} sets - List of sets
+  * @param {IHeaders} headers - Headers of Karnaugh map
+  * @returns {{result: Array<Array<Digits>>, headers: IHeaders} - Karnaugh map
+   */
   static karnaughMap = (
     count: number,
     sets: Array<number>,
-    headers: typeof NormalFormService.defaultHeadersKarnaughMap
+    headers: IHeaders
   ) => {
     if (!headers) {
       headers = NormalFormService.defaultHeadersKarnaughMap

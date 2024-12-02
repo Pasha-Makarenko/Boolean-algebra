@@ -5,4 +5,5 @@
 .cache
 .eslintcache
 package-lock.json
-pnpm-lock.yaml!/pnpm-lock.yaml
+pnpm-lock.yaml
+/**/*.d.ts

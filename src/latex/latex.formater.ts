@@ -1,9 +1,4 @@
-export type SemiRectDirection = "top" | "bottom" | "left" | "right"
-export type CornerDirection =
-  | "topLeft"
-  | "topRight"
-  | "bottomLeft"
-  | "bottomRight"
+import { Colors, CornerDirection, Lengths, SemiRectDirection, Thickness } from "./latex.interfaces"
 
 export default class LatexFormater {
   static basic = {
@@ -16,7 +11,7 @@ export default class LatexFormater {
       ${content}
       \\end{document}
       `,
-    vspace: (size: number, format = "cm") => `\\vspace{${size}${format}}`
+    vspace: (size: number, format: Lengths = "cm") => `\\vspace{${size}${format}}`
   }
 
   static math = {
@@ -36,16 +31,18 @@ export default class LatexFormater {
   static colors = {
     import: "\\usepackage{colortbl}",
     data: {
-      white: "white",
-      gray: "gray",
-      black: "black",
-      red: "red",
-      green: "green",
-      blue: "blue",
-      cyan: "cyan",
-      magenta: "magenta",
-      yellow: "yellow",
-      orange: "orange"
+      "white": "white",
+      "gray": "gray",
+      "black": "black",
+      "red": "red",
+      "green": "green",
+      "blue": "blue",
+      "cyan": "cyan",
+      "magenta": "magenta",
+      "yellow": "yellow",
+      "orange": "orange"
+    } as {
+      [key in Colors]: key
     }
   }
 
@@ -69,13 +66,15 @@ export default class LatexFormater {
   static tikz = {
     import: "\\usepackage{tikz}",
     thickness: {
-      ultraThin: "ultra thin",
-      veryThin: "very thin",
-      thin: "thin",
-      semithick: "semithick",
-      thick: "thick",
-      veryThick: "very thick",
-      ultraThick: "ultra thick"
+      "ultra thin": "ultra thin",
+      "very thin": "very thin",
+      "thin": "thin",
+      "semithick": "semithick",
+      "thick": "thick",
+      "very thick": "very thick",
+      "ultra thick": "ultra thick"
+    } as {
+      [key in Thickness]: key
     },
     picture: (content: string) =>
       `
