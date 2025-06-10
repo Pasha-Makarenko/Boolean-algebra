@@ -227,7 +227,7 @@ export default class NormalFormService {
   static karnaughMap = (
     count: number,
     sets: Array<number>,
-    headers: IHeaders
+    headers: IHeaders = NormalFormService.defaultHeadersKarnaughMap
   ) => {
     if (!headers) {
       headers = NormalFormService.defaultHeadersKarnaughMap

@@ -132,7 +132,7 @@ export default class NormalFormFormater {
     type: TypeNF,
     count: number,
     sets: Array<ISet>,
-    options = NormalFormFormater.defaultNormalFormOptions
+    options: Partial<DefaultNormalFormOptions> = NormalFormFormater.defaultNormalFormOptions
   ) => {
     let result = NormalFormFormater.signature(
       count,
