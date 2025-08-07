@@ -1,0 +1,94 @@
+services:
+  database-test:
+    container_name: boolean.postgres.test
+    image: postgres:16.4-alpine
+    env_file:
+      - .env.test
+    ports:
+      - ${POSTGRES_PORT}:5432
+    volumes:
+      - ./data-test/postgres:/var/lib/postgresql/data
+    networks:
+      - test-network
+
+  redis-test:
+    container_name: boolean.redis.test
+    image: redis:latest
+    env_file:
+      - .env.test
+    ports:
+      - ${REDIS_PORT}:6379
+    volumes:
+      - ./data-test/redis:/data
+    networks:
+      - test-network
+
+  rabbitmq-test:
+    container_name: boolean.rabbitmq.test
+    image: rabbitmq:4.0-management
+    env_file:
+      - .env.test
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    ports:
+      - ${RABBITMQ_PORT}:5672
+      - "15672:15672"
+    volumes:
+      - ./data-test/rabbitmq:/var/lib/rabbitmq
+    networks:
+      - test-network
+
+  test-unit-frontend:
+    container_name: boolean.frontend.test-unit
+    build:
+      context: frontend
+      dockerfile: Dockerfile.test
+    env_file:
+      - .env.test
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - test-network
+    command: npm run test:unit
+
+  test-unit-backend:
+    container_name: boolean.backend.test-unit
+    build:
+      context: backend
+      dockerfile: Dockerfile.test
+    env_file:
+      - .env.test
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - rabbitmq-test
+      - database-test
+      - redis-test
+    networks:
+      - test-network
+    command: npm run test:unit:backend
+
+  test-integration-backend:
+    container_name: boolean.backend.test-integration
+    build:
+      context: backend
+      dockerfile: Dockerfile.test
+    env_file:
+      - .env.test
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - rabbitmq-test
+      - database-test
+      - redis-test
+    networks:
+      - test-network
+    command: sh -c "npm run migrate:backend && npm run test:integration:backend"
+
+networks:
+  test-network:
+    driver: bridge

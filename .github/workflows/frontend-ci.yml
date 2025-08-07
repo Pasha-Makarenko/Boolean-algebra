@@ -1,0 +1,29 @@
+name: Frontend CI
+
+on:
+  push:
+    paths:
+      - 'frontend/**'
+
+jobs:
+  lint-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+
+      - name: Install dependencies
+        run: npm run install:frontend
+
+      - name: Run ESLint
+        working-directory: frontend
+        run: npm run lint
+
+      - name: Run Prettier
+        working-directory: frontend
+        run: npm run format

@@ -1,0 +1,23 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": "../",
+  "testEnvironment": "node",
+  "testMatch": ["<rootDir>/test/integration/**/*.int-spec.ts"],
+  "transform": {
+    "^.+\\.(t|j)s$": [
+      "ts-jest",
+      {
+        "tsconfig": "<rootDir>/tsconfig.spec.json"
+      }
+    ]
+  },
+  "moduleNameMapper": {
+    "^@/(.*)$": "<rootDir>/src/$1"
+  },
+  "setupFiles": ["<rootDir>/jest.setup.ts"],
+  "maxWorkers": 1,
+  "testTimeout": 30000,
+  "forceExit": true,
+  "detectOpenHandles": true,
+  "globalTeardown": "<rootDir>/test/teardown.ts"
+}

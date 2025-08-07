@@ -1,9 +1,9 @@
+/.idea
+/data
+/data-dev
+/data-test
 /node_modules
-/dist
-.idea
-.vscode
-.cache
-.eslintcache
-package-lock.json
-pnpm-lock.yaml
-/**/*.d.ts
+.env.test
+.env.dev
+.env
+.secrets

@@ -1,31 +1,30 @@
 {
   "name": "boolean",
-  "version": "1.1.0",
-  "description": "",
-  "main": "index.js",
+  "version": "1.0.0",
+  "author": "Pasha-Makarenko <pashamakarenko2007@gmail.com>",
+  "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "webpack",
-    "start": "node ./dist/bundle.js",
-    "watch": "webpack --watch",
-    "serve": "node --watch ./dist/bundle.js",
-    "lint": "eslint src/**/*.ts",
-    "format": "prettier --write src/**/*.ts"
+    "dev:start": "docker-compose -f docker-compose.dev.yaml --env-file .env.dev up -d",
+    "dev:stop": "docker-compose -f docker-compose.dev.yaml --env-file .env.dev down",
+    "install:all": "npm install && npm run install:backend && npm run install:frontend",
+    "install:backend": "cd backend && npm install -g @nestjs/cli && npm ci",
+    "install:frontend": "cd frontend && npm install -g @angular/cli && npm ci",
+    "build:all": "npm run build:backend && npm run build:frontend",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "start:all": "npm run start:backend & npm run start:frontend",
+    "start:backend": "cd backend && npm run start:prod",
+    "start:frontend": "cd frontend && npm run start",
+    "test:unit:frontend": "docker-compose -f docker-compose.test.yaml --env-file .env.test up --build test-unit-frontend",
+    "test:unit:backend": "docker-compose -f docker-compose.test.yaml --env-file .env.test up --build test-unit-backend",
+    "test:integration:backend": "docker-compose -f docker-compose.test.yaml --env-file .env.test up --build test-integration-backend"
   },
-  "devDependencies": {
-    "@babel/core": "^7.26.0",
-    "@babel/preset-env": "^7.26.0",
-    "@typescript-eslint/eslint-plugin": "^8.15.0",
-    "babel-loader": "^9.2.1",
-    "eslint": "^9.15.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "globals": "^15.12.0",
-    "prettier": "^3.3.3",
-    "ts-loader": "^9.5.1",
-    "typescript": "^5.6.3",
-    "webpack": "^5.96.1",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.1.0"
-  }
+  "keywords": [
+    "boolean",
+    "boolean-logic",
+    "boolean-algebra",
+    "boolean-operations",
+    "boolean-calculator"
+  ]
 }

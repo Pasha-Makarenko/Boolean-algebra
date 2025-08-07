@@ -1,0 +1,29 @@
+name: Backend CI
+
+on:
+  push:
+    paths:
+      - 'backend/**'
+
+jobs:
+  lint-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+
+      - name: Install dependencies
+        run: npm run install:backend
+
+      - name: Run ESLint
+        working-directory: backend
+        run: npm run lint
+
+      - name: Run Prettier
+        working-directory: backend
+        run: npm run format
