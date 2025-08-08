@@ -1,5 +1,6 @@
 import { Component } from "@angular/core"
 import { RouterOutlet } from "@angular/router"
+import { environment } from "../environments/environment"
 
 @Component({
   selector: "app-root",
@@ -12,7 +13,7 @@ export class App {
 
   constructor() {
     console.log(1)
-    fetch("http://localhost/api/test", { method: "GET" })
+    fetch(`${environment.apiUrl}/test`, { method: "GET" })
       .then(res => res.json())
       .then(console.log)
       .catch(console.error)
