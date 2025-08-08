@@ -1,10 +1,11 @@
-import { ConfigService } from "@nestjs/config"
+export interface IRabbitMqConfig {
+  user: string
+  password: string
+  host: string
+  port: number
+}
 
-export const getRabbitMqUrls = (configService: ConfigService) => {
-  const user = configService.get<string>("RABBITMQ_USER")
-  const password = configService.get<string>("RABBITMQ_PASSWORD")
-  const host = configService.get<string>("RABBITMQ_HOST")
-  const port = configService.get<number>("RABBITMQ_PORT")
-
+export const getRabbitMqUrls = (config: IRabbitMqConfig) => {
+  const { user, password, host, port } = config
   return [`amqp://${user}:${password}@${host}:${port}`]
 }
