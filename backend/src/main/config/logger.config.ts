@@ -1,5 +1,9 @@
-import { ConfigService } from "@nestjs/config"
 import { Params } from "nestjs-pino"
+import { NODE_ENV } from "@main/config/config.schema"
+
+export interface ILoggerConfig {
+  url: string
+}
 
 export enum LogLevel {
   INFO = "info",
@@ -25,13 +29,15 @@ export const samplingLoggerConfig = {
   }
 }
 
-export const getPinoConfig = (configService: ConfigService): Params => ({
+export const getPinoConfig = (
+  config: ILoggerConfig,
+  environment: string
+): Params => ({
   pinoHttp: {
     level: LogLevel.INFO,
     hooks: {
       logMethod(args, method) {
-        const sampling =
-          samplingLoggerConfig[configService.get<string>("NODE_ENV")!]
+        const sampling = samplingLoggerConfig[environment]
         const level = args[0] as LogLevel
         if (sampling[level] === 0) return
         if (sampling[level] && Math.random() > sampling[level]) return
@@ -69,12 +75,12 @@ export const getPinoConfig = (configService: ConfigService): Params => ({
       }
     },
     transport:
-      configService.get<string>("NODE_ENV") === "test"
+      environment === NODE_ENV.TEST
         ? undefined
         : {
             target: "pino-loki",
             options: {
-              host: configService.get<string>("LOKI_HOST"),
+              host: config.url,
               json: true,
               batch: true,
               labels: { app: "backend" }

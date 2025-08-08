@@ -4,6 +4,8 @@ import { ConfigService } from "@nestjs/config"
 import { Logger } from "nestjs-pino"
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger"
 import { ValidationPipe } from "@nestjs/common"
+import { IClientConfig } from "@main/config/client.config"
+import { IApiConfig } from "@main/config/api.config"
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
@@ -11,7 +13,11 @@ async function bootstrap() {
   const logger = app.get(Logger)
 
   app.enableCors({
-    origin: configService.get<string>("CLIENT_URL")
+    origin: configService.get<IClientConfig>("client")!.url,
+    credentials: true,
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: false,
+    optionsSuccessStatus: 204
   })
   app.setGlobalPrefix("api")
   app.useLogger(logger)
@@ -31,7 +37,7 @@ async function bootstrap() {
     })
   )
 
-  await app.listen(configService.get<string>("API_PORT")!)
+  await app.listen(configService.get<IApiConfig>("api")!.port)
 }
 
 bootstrap()

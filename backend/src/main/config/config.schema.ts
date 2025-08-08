@@ -33,13 +33,8 @@ export const smtpSchema = Joi.object({
   SMTP_PASSWORD: Joi.string().required()
 })
 
-export const observabilitySchema = Joi.object({
-  PROMETHEUS_PORT: Joi.number().port().required(),
-  LOKI_PORT: Joi.number().port().required(),
-  LOKI_HOST: Joi.string().uri().required(),
-  GRAFANA_PORT: Joi.number().port().required(),
-  GRAFANA_USER: Joi.string().required(),
-  GRAFANA_PASSWORD: Joi.string().required()
+export const loggerSchema = Joi.object({
+  LOKI_URL: Joi.string().uri().required()
 })
 
 export const apiSchema = Joi.object({
@@ -48,7 +43,6 @@ export const apiSchema = Joi.object({
 })
 
 export const clientSchema = Joi.object({
-  CLIENT_PORT: Joi.number().port().required(),
   CLIENT_URL: Joi.string().uri().required()
 })
 
@@ -63,7 +57,7 @@ export const configValidationSchema = Joi.object()
   .concat(redisSchema)
   .concat(rabbitMQSchema)
   .concat(smtpSchema)
-  .concat(observabilitySchema)
+  .concat(loggerSchema)
   .concat(apiSchema)
   .concat(clientSchema)
   .concat(nodeEnvSchema)

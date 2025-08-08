@@ -12,7 +12,8 @@ export class App {
 
   constructor() {
     console.log(1)
-    fetch("http://localhost:8000/api/test", { method: "GET" })
+    fetch("http://localhost/api/test", { method: "GET" })
+      .then(res => res.json())
       .then(console.log)
       .catch(console.error)
   }

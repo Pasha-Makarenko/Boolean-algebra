@@ -1,16 +1,25 @@
 import { MikroOrmModuleOptions } from "@mikro-orm/nestjs"
-import { ConfigService } from "@nestjs/config"
 import { PostgreSqlDriver } from "@mikro-orm/postgresql"
+import { NODE_ENV } from "@main/config/config.schema"
+
+export interface IDatabaseConfig {
+  host: string
+  port: number
+  user: string
+  password: string
+  dbName: string
+}
 
 export const getMikroOrmConfig = (
-  configService: ConfigService
+  config: IDatabaseConfig,
+  environment: NODE_ENV
 ): MikroOrmModuleOptions => ({
   driver: PostgreSqlDriver,
-  host: configService.get<string>("POSTGRES_HOST"),
-  port: Number(configService.get<number>("POSTGRES_PORT")),
-  user: configService.get<string>("POSTGRES_USER"),
-  password: configService.get<string>("POSTGRES_PASSWORD"),
-  dbName: configService.get<string>("POSTGRES_DB"),
-  debug: configService.get<string>("NODE_ENV") !== "production",
+  host: config.host,
+  port: config.port,
+  user: config.user,
+  password: config.password,
+  dbName: config.dbName,
+  debug: environment !== NODE_ENV.PRODUCTION,
   autoLoadEntities: true
 })
