@@ -6,8 +6,8 @@ import { EntityGenerator } from "@mikro-orm/entity-generator"
 import { SeedManager } from "@mikro-orm/seeder"
 import { PostgreSqlDriver } from "@mikro-orm/postgresql"
 import * as process from "node:process"
-import { BaseSchema } from "@infrastructure/common/persistance/base.schema"
-import { UserSchema } from "@infrastructure/users/persistance/user.schema"
+import { BaseSchema } from "@infrastructure/common/persistance/schemas/base.schema"
+import { UserSchema } from "@infrastructure/users/persistance/schemas/user.schema"
 
 export default defineConfig({
   driver: PostgreSqlDriver,

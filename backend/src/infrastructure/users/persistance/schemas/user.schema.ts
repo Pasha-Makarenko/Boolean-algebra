@@ -1,7 +1,7 @@
 import { EntitySchema } from "@mikro-orm/core"
 import { User } from "@domain/users/entities/user.entity"
 import { BaseEntity } from "@domain/common/entities/base.entity"
-import { BaseSchema } from "@infrastructure/common/persistance/base.schema"
+import { BaseSchema } from "@infrastructure/common/persistance/schemas/base.schema"
 
 export const UserSchema = new EntitySchema<User, BaseEntity>({
   class: User,
