@@ -2,13 +2,15 @@ import { ISlugifyService } from "@domain/common/services/slugify.service"
 import { IUsersQueryRepository } from "@domain/users/repositories/users-query.repository"
 import { ConflictException } from "@domain/common/exceptions/conflict.exception"
 import { User } from "@domain/users/entities/user.entity"
+import { IHasherService } from "@domain/common/services/hasher.service"
 
 export const USER_FACTORY = "USER_FACTORY"
 
 export class UserFactory {
   constructor(
     private readonly usersQueryRepository: IUsersQueryRepository,
-    private readonly slugifyService: ISlugifyService
+    private readonly slugifyService: ISlugifyService,
+    private readonly hasherService: IHasherService
   ) {}
 
   async create(name: string, email: string, password: string) {
@@ -19,8 +21,9 @@ export class UserFactory {
     }
 
     const username = await this.generateUsername(name)
+    const hashedPassword = await this.hasherService.hash(password)
 
-    return User.create(null, name, username, email, password)
+    return User.create(null, name, username, email, hashedPassword)
   }
 
   private async generateUsername(name: string) {
