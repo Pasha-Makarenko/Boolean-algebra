@@ -23,6 +23,7 @@ import {
 import { CreateUserHandler } from "@application/users/commands/handlers/create-user.handler"
 import { ChangeEmailHandler } from "@application/users/commands/handlers/change-email.handler"
 import { ChangePasswordHandler } from "@application/users/commands/handlers/change-password.handler"
+import { UpdateUserHandler } from "@application/users/commands/handlers/update-user.handler"
 
 const repositories = [
   {
@@ -50,7 +51,8 @@ const factories = [
 export const commandHandlers = [
   CreateUserHandler,
   ChangeEmailHandler,
-  ChangePasswordHandler
+  ChangePasswordHandler,
+  UpdateUserHandler
 ]
 
 @Module({

@@ -86,4 +86,22 @@ export class User extends Identity {
     this._password = password
     this._updatedAt = new Date()
   }
+
+  changeName(name: string) {
+    if (this._name === name) {
+      throw new ConflictException("New name must be different from current")
+    }
+
+    this._name = name
+    this._updatedAt = new Date()
+  }
+
+  changeUsername(username: string) {
+    if (this._username === username) {
+      throw new ConflictException("New username must be different from current")
+    }
+
+    this._username = username
+    this._updatedAt = new Date()
+  }
 }

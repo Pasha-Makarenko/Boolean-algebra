@@ -34,9 +34,9 @@ export class ChangePasswordHandler
     const { password, newPassword } = command.dto
 
     this.logger.log({
-      operationName: "changeEmail",
+      operationName: "changePassword",
       params: command,
-      message: "Changing user email"
+      message: "Changing user password"
     })
 
     const user = await this.usersQueryRepository.findById(command.userId)
@@ -62,12 +62,12 @@ export class ChangePasswordHandler
     })
 
     this.logger.log({
-      operationName: "changeEmail",
+      operationName: "changePassword",
       params: command,
       result: {
         user_id: user.id
       },
-      message: "User email changed successfully"
+      message: "User password changed successfully"
     })
   }
 }
