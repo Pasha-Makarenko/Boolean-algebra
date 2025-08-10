@@ -1,11 +1,11 @@
 import { EntitySchema } from "@mikro-orm/core"
 import { User } from "@domain/users/entities/user.entity"
-import { BaseEntity } from "@domain/common/entities/base.entity"
-import { BaseSchema } from "@infrastructure/common/persistance/schemas/base.schema"
+import { Identity } from "@domain/common/entities/identity.entity"
+import { IdentitySchema } from "@infrastructure/common/persistance/schemas/identity.schema"
 
-export const UserSchema = new EntitySchema<User, BaseEntity>({
+export const UserSchema = new EntitySchema<User, Identity>({
   class: User,
-  extends: BaseSchema,
+  extends: IdentitySchema,
   tableName: "users",
   properties: {
     ["_name" as "name"]: {
@@ -45,8 +45,25 @@ export const UserSchema = new EntitySchema<User, BaseEntity>({
       defaultRaw: "false",
       nullable: false,
       fieldName: "confirmed",
-      getterName: "confirmed",
-      onCreate: () => false
+      getterName: "confirmed"
+    },
+    ["_credentials" as "credentials"]: {
+      kind: "embedded",
+      entity: "Credentials"
+    },
+    ["_createdAt" as "createdAt"]: {
+      type: "Date",
+      nullable: false,
+      defaultRaw: "CURRENT_TIMESTAMP",
+      fieldName: "created_at",
+      getterName: "createdAt"
+    },
+    ["_updatedAt" as "updatedAt"]: {
+      type: "Date",
+      nullable: false,
+      defaultRaw: "CURRENT_TIMESTAMP",
+      fieldName: "updated_at",
+      getterName: "updatedAt"
     }
   }
 })

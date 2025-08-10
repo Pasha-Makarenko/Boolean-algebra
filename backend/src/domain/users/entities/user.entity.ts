@@ -1,8 +1,12 @@
-import { BaseEntity } from "@domain/common/entities/base.entity"
+import { Identity } from "@domain/common/entities/identity.entity"
+import { Credentials } from "@domain/users/value-objects/credentials.value-object"
 import { ConflictException } from "@domain/common/exceptions/conflict.exception"
 
-export class User extends BaseEntity {
+export class User extends Identity {
   private _confirmed = false
+  private _credentials = new Credentials()
+  private _createdAt = new Date()
+  private _updatedAt = new Date()
 
   constructor(
     id: string | null,
@@ -44,12 +48,24 @@ export class User extends BaseEntity {
     return this._confirmed
   }
 
+  get credentials() {
+    return this._credentials
+  }
+
+  get createdAt() {
+    return this._createdAt
+  }
+
+  get updatedAt() {
+    return this._updatedAt
+  }
+
   confirm() {
     if (this._confirmed) {
       throw new ConflictException("User already confirmed")
     }
 
     this._confirmed = true
-    this.updateTimestamp()
+    this._updatedAt = new Date()
   }
 }

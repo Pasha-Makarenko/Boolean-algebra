@@ -6,8 +6,9 @@ import { EntityGenerator } from "@mikro-orm/entity-generator"
 import { SeedManager } from "@mikro-orm/seeder"
 import { PostgreSqlDriver } from "@mikro-orm/postgresql"
 import * as process from "node:process"
-import { BaseSchema } from "@infrastructure/common/persistance/schemas/base.schema"
+import { IdentitySchema } from "@infrastructure/common/persistance/schemas/identity.schema"
 import { UserSchema } from "@infrastructure/users/persistance/schemas/user.schema"
+import { CredentialsSchema } from "@infrastructure/users/persistance/schemas/credentials.schema"
 
 export default defineConfig({
   driver: PostgreSqlDriver,
@@ -16,7 +17,7 @@ export default defineConfig({
   user: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,
   dbName: process.env.POSTGRES_DB,
-  entities: [BaseSchema, UserSchema],
+  entities: [IdentitySchema, UserSchema, CredentialsSchema],
   debug: process.env.NODE_ENV !== "production",
   highlighter: new SqlHighlighter(),
   metadataProvider: TsMorphMetadataProvider,
