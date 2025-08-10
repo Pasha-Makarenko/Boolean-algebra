@@ -77,4 +77,13 @@ export class User extends Identity {
     this._email = email
     this._updatedAt = new Date()
   }
+
+  changePassword(password: string) {
+    if (this._password === password) {
+      throw new ConflictException("New password must be different from current")
+    }
+
+    this._password = password
+    this._updatedAt = new Date()
+  }
 }

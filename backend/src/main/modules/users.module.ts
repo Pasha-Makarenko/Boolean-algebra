@@ -22,6 +22,7 @@ import {
 } from "@domain/common/services/hasher.service"
 import { CreateUserHandler } from "@application/users/commands/handlers/create-user.handler"
 import { ChangeEmailHandler } from "@application/users/commands/handlers/change-email.handler"
+import { ChangePasswordHandler } from "@application/users/commands/handlers/change-password.handler"
 
 const repositories = [
   {
@@ -46,7 +47,11 @@ const factories = [
   }
 ]
 
-export const commandHandlers = [CreateUserHandler, ChangeEmailHandler]
+export const commandHandlers = [
+  CreateUserHandler,
+  ChangeEmailHandler,
+  ChangePasswordHandler
+]
 
 @Module({
   imports: [
