@@ -1,7 +1,4 @@
-import {
-  BaseException,
-  SerializedException
-} from "@domain/common/exceptions/base.exception"
+import { BaseException } from "@domain/common/exceptions/base.exception"
 
 export const CONFLICT_EXCEPTION_CODE = "CONFLICT"
 
@@ -10,17 +7,5 @@ export class ConflictException extends BaseException {
 
   constructor(message = "Conflict occurred", details?: unknown) {
     super(message, details)
-  }
-
-  serialize() {
-    const serialized: SerializedException = {
-      message: this.message
-    }
-
-    if (this.details) {
-      serialized.details = this.details
-    }
-
-    return serialized
   }
 }

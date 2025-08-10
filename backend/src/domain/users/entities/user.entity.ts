@@ -68,4 +68,13 @@ export class User extends Identity {
     this._confirmed = true
     this._updatedAt = new Date()
   }
+
+  changeEmail(email: string) {
+    if (this._email === email) {
+      throw new ConflictException("New email must be different from current")
+    }
+
+    this._email = email
+    this._updatedAt = new Date()
+  }
 }

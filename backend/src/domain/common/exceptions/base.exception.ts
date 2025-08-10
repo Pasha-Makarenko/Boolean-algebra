@@ -14,5 +14,15 @@ export abstract class BaseException extends Error {
     Object.setPrototypeOf(this, BaseException.prototype)
   }
 
-  abstract serialize(): SerializedException
+  serialize() {
+    const serialized: SerializedException = {
+      message: this.message
+    }
+
+    if (this.details) {
+      serialized.details = this.details
+    }
+
+    return serialized
+  }
 }
