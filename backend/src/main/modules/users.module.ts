@@ -16,6 +16,11 @@ import {
   ISlugifyService,
   SLUGIFY_SERVICE
 } from "@domain/common/services/slugify.service"
+import {
+  HASHER_SERVICE,
+  IHasherService
+} from "@domain/common/services/hasher.service"
+import { CreateUserHandler } from "@application/users/commands/handlers/create-user.handler"
 
 const repositories = [
   {
@@ -33,11 +38,14 @@ const factories = [
     provide: USER_FACTORY,
     useFactory: (
       userQueryRepository: IUsersQueryRepository,
-      slugifyService: ISlugifyService
-    ) => new UserFactory(userQueryRepository, slugifyService),
-    inject: [USERS_QUERY_REPOSITORY, SLUGIFY_SERVICE]
+      slugifyService: ISlugifyService,
+      hasherService: IHasherService
+    ) => new UserFactory(userQueryRepository, slugifyService, hasherService),
+    inject: [USERS_QUERY_REPOSITORY, SLUGIFY_SERVICE, HASHER_SERVICE]
   }
 ]
+
+export const commandHandlers = [CreateUserHandler]
 
 @Module({
   imports: [
@@ -46,10 +54,11 @@ const factories = [
     MikroOrmModule.forFeature([UserSchema]),
     InfrastructureModule
   ],
-  providers: [...repositories, ...factories],
+  providers: [...repositories, ...factories, ...commandHandlers],
   exports: [
     ...repositories.map(r => r.provide),
-    ...factories.map(f => f.provide)
+    ...factories.map(f => f.provide),
+    ...commandHandlers
   ]
 })
 export class UsersModule {}
